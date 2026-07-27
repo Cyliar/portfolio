@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rania Lasfar — Ingénieure IA &amp; Automatisation</title>
+<meta name="description" content="Portfolio de Rania Lasfar, ingénieure en intelligence artificielle et automatisation à Casablanca.">
+
+<!-- Polices : Bricolage Grotesque (titres), IBM Plex Sans (texte), IBM Plex Mono (étiquettes) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   1. JETONS DE DESIGN (couleurs, typo, rythme)
+   Modifie ces variables pour changer toute l'identité du site.
+   ============================================================ */
+:root{
+  --ink:      #131E33;   /* bleu nuit : texte principal */
+  --ink-2:    #4A5A78;   /* gris-bleu : texte secondaire */
+  --paper:    #EEF1F5;   /* fond de page, gris froid */
+  --card:     #FFFFFF;
+  --line:     #D6DCE5;
+  --signal:   #3B2FD9;   /* indigo électrique : accent unique */
+  --pulse:    #0E9B94;   /* teal : indicateurs d'état */
+
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:    "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:    "IBM Plex Mono", ui-monospace, Consolas, monospace;
+
+  --rail: 300px;
+  --gut: clamp(24px, 5vw, 72px);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:var(--body);
+  color:var(--ink);
+  background:var(--paper);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  display:grid;
+  grid-template-columns:var(--rail) 1fr;
+}
+
+a{color:inherit}
+
+/* ============================================================
+   2. RAIL DE GAUCHE — identité + navigation (fixe au scroll)
+   ============================================================ */
+.rail{
+  position:sticky;
+  top:0;
+  height:100vh;
+  padding:var(--gut) 28px;
+  border-right:1px solid var(--line);
+  background:var(--paper);
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+
+.rail-name{
+  font-family:var(--display);
+  font-size:30px;
+  font-weight:800;
+  letter-spacing:-.02em;
+  line-height:1.05;
+}
+.rail-role{
+  font-family:var(--mono);
+  font-size:11.5px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--ink-2);
+  margin-top:10px;
+}
+
+/* Navigation par ancres */
+.nav{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+.nav a{
+  font-family:var(--mono);
+  font-size:12.5px;
+  text-decoration:none;
+  color:var(--ink-2);
+  padding:6px 0 6px 18px;
+  border-left:2px solid var(--line);
+  transition:color .18s, border-color .18s, padding-left .18s;
+}
+.nav a:hover, .nav a:focus-visible{
+  color:var(--signal);
+  border-left-color:var(--signal);
+  padding-left:24px;
+}
+
+.rail-foot{margin-top:auto;display:flex;flex-direction:column;gap:14px}
+
+/* Sélecteur de langue */
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;width:max-content;background:var(--card)}
+.lang button{
+  font-family:var(--mono);
+  font-size:11.5px;
+  letter-spacing:.08em;
+  padding:6px 14px;
+  border:0;
+  background:transparent;
+  color:var(--ink-2);
+  cursor:pointer;
+  transition:background .18s, color .18s;
+}
+.lang button[aria-pressed="true"]{background:var(--signal);color:#fff}
+
+.rail-links{display:flex;flex-direction:column;gap:6px;font-family:var(--mono);font-size:12px}
+.rail-links a{color:var(--ink-2);text-decoration:none;transition:color .18s}
+.rail-links a:hover, .rail-links a:focus-visible{color:var(--signal)}
+
+/* ============================================================
+   3. COLONNE PRINCIPALE
+   ============================================================ */
+main{padding:var(--gut) var(--gut) 96px; max-width:900px}
+
+section{padding-block:clamp(48px,7vw,88px)}
+section + section{border-top:1px solid var(--line)}
+section:first-child{padding-top:clamp(20px,4vw,40px)}
+
+/* Étiquette de section, en mono */
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11.5px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--signal);
+  margin-bottom:22px;
+}
+
+h2{
+  font-family:var(--display);
+  font-size:clamp(24px,3vw,32px);
+  font-weight:700;
+  letter-spacing:-.02em;
+  margin-bottom:26px;
+}
+
+p{color:var(--ink-2);max-width:62ch}
+
+/* --- Accroche --- */
+.thesis{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(34px,5.6vw,60px);
+  line-height:1.02;
+  letter-spacing:-.035em;
+  color:var(--ink);
+  max-width:16ch;
+  margin-bottom:26px;
+}
+.thesis em{font-style:normal;color:var(--signal)}
+
+.lede{font-size:17px;max-width:56ch}
+
+/* Bandeau d'état — l'élément signature du site */
+.status{
+  margin-top:34px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--card);
+  padding:4px 0;
+  max-width:520px;
+}
+.status-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 18px;
+  font-family:var(--mono);
+  font-size:12.5px;
+  color:var(--ink-2);
+}
+.status-row + .status-row{border-top:1px solid var(--line)}
+.status-row b{color:var(--ink);font-weight:500}
+
+.dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--pulse);
+  flex:none;
+  box-shadow:0 0 0 0 rgba(14,155,148,.5);
+  animation:ping 2.6s ease-out infinite;
+}
+.dot.idle{background:var(--signal);box-shadow:none;animation:none}
+@keyframes ping{
+  0%   {box-shadow:0 0 0 0 rgba(14,155,148,.45)}
+  70%  {box-shadow:0 0 0 9px rgba(14,155,148,0)}
+  100% {box-shadow:0 0 0 0 rgba(14,155,148,0)}
+}
+
+/* --- Parcours : ligne temporelle --- */
+.timeline{position:relative;padding-left:26px}
+.timeline::before{
+  content:"";position:absolute;left:3px;top:6px;bottom:6px;
+  width:1px;background:var(--line);
+}
+.step{position:relative;padding-block:16px}
+.step::before{
+  content:"";position:absolute;left:-26px;top:24px;
+  width:7px;height:7px;border-radius:50%;
+  background:var(--paper);border:2px solid var(--signal);
+}
+.step-date{font-family:var(--mono);font-size:12px;color:var(--signal);letter-spacing:.04em}
+.step-title{font-weight:600;font-size:17px;margin-top:4px}
+.step-org{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.step p{margin-top:8px;font-size:15px}
+
+/* --- Projets --- */
+.projects{display:grid;gap:16px}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:22px 24px;
+  display:grid;
+  grid-template-columns:1fr 108px;
+  gap:24px;
+  align-items:start;
+  transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.card:hover{
+  transform:translateY(-3px);
+  border-color:#BFC7D4;
+  box-shadow:0 10px 28px -18px rgba(19,30,51,.45);
+}
+.card-label{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--ink-2);
+}
+.card h3{font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:-.01em;margin:8px 0 8px}
+.card p{font-size:14.5px;max-width:52ch}
+
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag{
+  font-family:var(--mono);font-size:11px;
+  padding:3px 9px;border-radius:5px;
+  background:var(--paper);color:var(--ink-2);
+  border:1px solid var(--line);
+}
+
+/* Mini-courbe : chaque projet a la forme de son propre signal */
+.spark{width:108px;height:34px;overflow:visible}
+.spark polyline{fill:none;stroke:var(--signal);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.spark .base{stroke:var(--line);stroke-width:1;stroke-dasharray:2 3}
+
+/* --- Compétences --- */
+.stack-group{margin-bottom:22px}
+.stack-group h3{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-2);font-weight:400;margin-bottom:10px;
+}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  font-size:14px;padding:6px 13px;border-radius:7px;
+  background:var(--card);border:1px solid var(--line);
+}
+
+/* --- Certifications --- */
+.certs{list-style:none;display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.certs li{
+  background:var(--card);padding:15px 20px;
+  display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;
+}
+.certs .issuer{font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+
+/* --- Contact --- */
+.contact-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.btn{
+  font-family:var(--mono);font-size:13px;
+  text-decoration:none;padding:11px 20px;border-radius:8px;
+  border:1px solid var(--ink);color:var(--ink);
+  transition:background .18s, color .18s, border-color .18s;
+}
+.btn:hover, .btn:focus-visible{background:var(--ink);color:var(--paper)}
+.btn.primary{background:var(--signal);border-color:var(--signal);color:#fff}
+.btn.primary:hover, .btn.primary:focus-visible{background:#2C21B5;border-color:#2C21B5}
+
+footer{
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-2);
+  padding-top:40px;border-top:1px solid var(--line);margin-top:40px;
+}
+
+/* Accessibilité : focus clavier toujours visible */
+a:focus-visible, button:focus-visible{outline:2px solid var(--signal);outline-offset:3px;border-radius:3px}
+
+/* ============================================================
+   4. APPARITION AU CHARGEMENT + RESPONSIVE
+   ============================================================ */
+.reveal{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.3,1) forwards}
+.reveal:nth-child(2){animation-delay:.07s}
+.reveal:nth-child(3){animation-delay:.14s}
+@keyframes rise{to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+  .reveal{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+
+@media (max-width:880px){
+  body{grid-template-columns:1fr}
+  .rail{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);gap:20px}
+  .nav{flex-direction:row;flex-wrap:wrap;gap:4px}
+  .nav a{border-left:0;border-bottom:2px solid var(--line);padding:4px 10px}
+  .nav a:hover{padding-left:10px}
+  .rail-foot{margin-top:0;flex-direction:row;justify-content:space-between;align-items:flex-end;flex-wrap:wrap}
+  main{padding-bottom:64px}
+  .card{grid-template-columns:1fr}
+  .spark{width:100%;max-width:140px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ========================= RAIL ========================= -->
+<aside class="rail">
+  <div>
+    <div class="rail-name">Rania<br>Lasfar</div>
+    <div class="rail-role"
+         data-fr="Ingénieure IA &amp; Automatisation"
+         data-en="AI &amp; Automation Engineer">Ingénieure IA &amp; Automatisation</div>
+  </div>
+
+  <nav class="nav">
+    <a href="#intro"    data-fr="Profil"          data-en="Profile">Profil</a>
+    <a href="#parcours" data-fr="Parcours"        data-en="Experience">Parcours</a>
+    <a href="#projets"  data-fr="Projets"         data-en="Projects">Projets</a>
+    <a href="#stack"    data-fr="Compétences"     data-en="Skills">Compétences</a>
+    <a href="#certifs"  data-fr="Certifications"  data-en="Certifications">Certifications</a>
+    <a href="#contact"  data-fr="Contact"         data-en="Contact">Contact</a>
+  </nav>
+
+  <div class="rail-foot">
+    <div class="lang">
+      <button type="button" data-lang="fr" aria-pressed="true">FR</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <div class="rail-links">
+      <a href="https://www.linkedin.com/in/rania-lasfar-681977265/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="https://github.com/Cyliar" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</aside>
+
+<!-- ========================= CONTENU ========================= -->
+<main>
+
+  <!-- ---------- Accroche ---------- -->
+  <section id="intro">
+    <p class="eyebrow reveal">Casablanca, Maroc</p>
+
+    <h1 class="thesis reveal"
+        data-fr="Lire les signaux <em>avant</em> la panne."
+        data-en="Reading the signals <em>before</em> things break.">Lire les signaux <em>avant</em> la panne.</h1>
+
+    <p class="lede reveal"
+       data-fr="Ingénieure en intelligence artificielle et automatisation. Je construis des modèles qui anticipent — pannes de guichets, consommation d'eau, embouteillages — et des robots logiciels qui prennent en charge le travail répétitif."
+       data-en="AI and automation engineer. I build models that anticipate — ATM failures, water demand, traffic jams — and software robots that take over repetitive work.">
+    </p>
+
+    <div class="status reveal">
+      <div class="status-row">
+        <span class="dot"></span>
+        <span data-fr="En poste — <b>Crédit du Maroc</b>, depuis janvier 2025"
+              data-en="Currently at — <b>Crédit du Maroc</b>, since January 2025"></span>
+      </div>
+      <div class="status-row">
+        <span class="dot idle"></span>
+        <span data-fr="Mobilité <b>nationale</b> — ouverte aux échanges"
+              data-en="Open to roles <b>across Morocco</b> — happy to talk"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Parcours ---------- -->
+  <section id="parcours">
+    <p class="eyebrow" data-fr="01 — Parcours" data-en="01 — Experience">01 — Parcours</p>
+    <h2 data-fr="Là où j'ai travaillé" data-en="Where I've worked">Là où j'ai travaillé</h2>
+
+    <div class="timeline">
+      <div class="step">
+        <div class="step-date" data-fr="Depuis janvier 2025" data-en="Since January 2025">Depuis janvier 2025</div>
+        <div class="step-title" data-fr="Ingénieure IA &amp; Automatisation" data-en="AI &amp; Automation Engineer"></div>
+        <div class="step-org">Crédit du Maroc — Casablanca</div>
+        <p data-fr="Conception et mise en production de cas d'usage IA et RPA pour la banque. Modèle de prédiction des pannes de guichets automatiques, automatisation de processus métier, tableaux de bord de suivi."
+           data-en="Designing and shipping AI and RPA use cases for the bank. Predictive model for ATM failures, business-process automation, monitoring dashboards."></p>
+      </div>
+
+      <div class="step">
+        <div class="step-date">2024</div>
+        <div class="step-title" data-fr="Développeuse Microsoft Power Platform" data-en="Microsoft Power Platform Developer"></div>
+        <div class="step-org">CBI — Casablanca</div>
+        <p data-fr="Développement d'applications métier sur Power Apps et Power Automate, restitution des données sous Power BI."
+           data-en="Built internal business apps with Power Apps and Power Automate, with reporting in Power BI."></p>
+      </div>
+
+      <div class="step">
+        <div class="step-date">2023</div>
+        <div class="step-title" data-fr="Data Scientist" data-en="Data Scientist"></div>
+        <div class="step-org">SRM</div>
+        <p data-fr="Modèle prédictif de consommation d'eau : préparation des données, entraînement et évaluation, restitution aux équipes métier."
+           data-en="Predictive model for water consumption: data preparation, training and evaluation, hand-off to business teams."></p>
+      </div>
+
+      <div class="step">
+        <div class="step-date" data-fr="Diplôme" data-en="Degree">Diplôme</div>
+        <div class="step-title" data-fr="Master en Intelligence Artificielle &amp; Data Science" data-en="MSc in Artificial Intelligence &amp; Data Science"></div>
+        <div class="step-org">HEM École d'Ingénieurs — Bac+5</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Projets ---------- -->
+  <section id="projets">
+    <p class="eyebrow" data-fr="02 — Projets" data-en="02 — Projects">02 — Projets</p>
+    <h2 data-fr="Ce que j'ai construit" data-en="What I've built">Ce que j'ai construit</h2>
+
+    <div class="projects">
+
+      <article class="card">
+        <div>
+          <div class="card-label" data-fr="Prédiction · Banque" data-en="Prediction · Banking">Prédiction · Banque</div>
+          <h3 data-fr="Prédiction des pannes de guichets" data-en="ATM failure prediction"></h3>
+          <p data-fr="Anticiper la défaillance d'un GAB à partir de ses journaux techniques, pour déclencher la maintenance avant l'arrêt de service."
+             data-en="Forecasting ATM breakdowns from device logs, so maintenance is triggered before the machine goes down."></p>
+          <div class="tags"><span class="tag">Python</span><span class="tag">scikit-learn</span><span class="tag">SQL</span><span class="tag">Power BI</span></div>
+        </div>
+        <svg class="spark" viewBox="0 0 108 34" aria-hidden="true">
+          <polyline class="base" points="0,17 108,17"/>
+          <polyline points="0,12 14,14 28,11 42,15 56,13 66,26 78,29 92,30 108,30"/>
+        </svg>
+      </article>
+
+      <article class="card">
+        <div>
+          <div class="card-label" data-fr="Vision · Santé" data-en="Vision · Healthcare">Vision · Santé</div>
+          <h3 data-fr="Détection de pneumonie par deep learning" data-en="Pneumonia detection with deep learning"></h3>
+          <p data-fr="Classification d'images radiographiques thoraciques par réseau de neurones convolutif, avec évaluation sur les métriques cliniquement utiles."
+             data-en="Convolutional neural network classifying chest X-rays, evaluated on the metrics that actually matter clinically."></p>
+          <div class="tags"><span class="tag">TensorFlow</span><span class="tag">PyTorch</span><span class="tag">CNN</span><span class="tag">Python</span></div>
+        </div>
+        <svg class="spark" viewBox="0 0 108 34" aria-hidden="true">
+          <polyline class="base" points="0,17 108,17"/>
+          <polyline points="0,31 12,29 24,24 36,17 48,11 60,8 74,6 90,5 108,5"/>
+        </svg>
+      </article>
+
+      <article class="card">
+        <div>
+          <div class="card-label" data-fr="Temps réel · Mobilité" data-en="Real time · Mobility">Temps réel · Mobilité</div>
+          <h3 data-fr="Prédiction d'embouteillages en temps réel" data-en="Real-time traffic congestion prediction"></h3>
+          <p data-fr="Modèle de machine learning alimenté en flux continu, capable de rendre une décision à l'instant plutôt qu'en traitement différé."
+             data-en="Streaming machine-learning model that returns a decision on the spot rather than in a nightly batch."></p>
+          <div class="tags"><span class="tag">Python</span><span class="tag">Streaming</span><span class="tag">Hadoop / Hive</span></div>
+        </div>
+        <svg class="spark" viewBox="0 0 108 34" aria-hidden="true">
+          <polyline class="base" points="0,17 108,17"/>
+          <polyline points="0,24 10,8 20,26 30,12 40,28 50,7 60,25 70,10 80,27 90,14 100,22 108,9"/>
+        </svg>
+      </article>
+
+      <article class="card">
+        <div>
+          <div class="card-label" data-fr="Prévision · Services publics" data-en="Forecasting · Utilities">Prévision · Services publics</div>
+          <h3 data-fr="Prévision de la consommation d'eau" data-en="Water consumption forecasting"></h3>
+          <p data-fr="Modèle de série temporelle pour estimer la demande à venir et appuyer la planification des ressources."
+             data-en="Time-series model estimating upcoming demand to support resource planning."></p>
+          <div class="tags"><span class="tag">Python</span><span class="tag">scikit-learn</span><span class="tag">SQL</span></div>
+        </div>
+        <svg class="spark" viewBox="0 0 108 34" aria-hidden="true">
+          <polyline class="base" points="0,17 108,17"/>
+          <polyline points="0,22 12,10 24,24 36,12 48,26 60,13 72,27 84,15 96,28 108,17"/>
+        </svg>
+      </article>
+
+      <article class="card">
+        <div>
+          <div class="card-label" data-fr="Automatisation · Métier" data-en="Automation · Operations">Automatisation · Métier</div>
+          <h3 data-fr="Robots RPA &amp; applications Power Platform" data-en="RPA robots &amp; Power Platform apps"></h3>
+          <p data-fr="Automatisation de tâches manuelles répétitives et applications internes livrées aux équipes métier, du besoin au déploiement."
+             data-en="Automating repetitive manual tasks and shipping internal apps to business teams, from need to deployment."></p>
+          <div class="tags"><span class="tag">Automation Anywhere</span><span class="tag">Power Apps</span><span class="tag">Power Automate</span><span class="tag">Power BI</span></div>
+        </div>
+        <svg class="spark" viewBox="0 0 108 34" aria-hidden="true">
+          <polyline class="base" points="0,17 108,17"/>
+          <polyline points="0,28 18,28 18,21 44,21 44,14 70,14 70,7 108,7"/>
+        </svg>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ---------- Compétences ---------- -->
+  <section id="stack">
+    <p class="eyebrow" data-fr="03 — Compétences" data-en="03 — Skills">03 — Compétences</p>
+    <h2 data-fr="Mes outils" data-en="My toolkit">Mes outils</h2>
+
+    <div class="stack-group">
+      <h3 data-fr="Machine learning &amp; IA" data-en="Machine learning &amp; AI">Machine learning &amp; IA</h3>
+      <div class="chips">
+        <span class="chip">Python</span><span class="chip">scikit-learn</span><span class="chip">TensorFlow</span>
+        <span class="chip">PyTorch</span><span class="chip">NLP</span><span class="chip">LLM</span>
+      </div>
+    </div>
+
+    <div class="stack-group">
+      <h3 data-fr="Données" data-en="Data">Données</h3>
+      <div class="chips">
+        <span class="chip">SQL</span><span class="chip">Hadoop</span><span class="chip">Hive</span><span class="chip">Power BI</span>
+      </div>
+    </div>
+
+    <div class="stack-group">
+      <h3 data-fr="Automatisation &amp; développement" data-en="Automation &amp; development">Automatisation &amp; développement</h3>
+      <div class="chips">
+        <span class="chip">Automation Anywhere (RPA)</span><span class="chip">Power Apps</span>
+        <span class="chip">Power Automate</span><span class="chip">C#</span><span class="chip">.NET MAUI</span>
+      </div>
+    </div>
+
+    <div class="stack-group">
+      <h3 data-fr="Langues" data-en="Languages">Langues</h3>
+      <div class="chips">
+        <span class="chip" data-fr="Arabe — C2" data-en="Arabic — C2">Arabe — C2</span>
+        <span class="chip" data-fr="Français — C1" data-en="French — C1">Français — C1</span>
+        <span class="chip" data-fr="Anglais — C1" data-en="English — C1">Anglais — C1</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Certifications ---------- -->
+  <section id="certifs">
+    <p class="eyebrow" data-fr="04 — Certifications" data-en="04 — Certifications">04 — Certifications</p>
+    <h2 data-fr="Ce que j'ai validé" data-en="What I've certified">Ce que j'ai validé</h2>
+
+    <ul class="certs">
+      <li><span data-fr="Data Science Professional" data-en="Data Science Professional">Data Science Professional</span><span class="issuer">IBM</span></li>
+      <li><span data-fr="Intelligence artificielle générative" data-en="Generative AI">Intelligence artificielle générative</span><span class="issuer">IBM</span></li>
+      <li><span data-fr="Scrum" data-en="Scrum">Scrum</span><span class="issuer">IBM</span></li>
+      <li><span data-fr="Automatisation robotisée des processus" data-en="Robotic Process Automation">Automatisation robotisée des processus</span><span class="issuer">Automation Anywhere</span></li>
+      <li><span data-fr="L'IA en entreprise" data-en="AI for Business">L'IA en entreprise</span><span class="issuer">Columbia</span></li>
+    </ul>
+  </section>
+
+  <!-- ---------- Contact ---------- -->
+  <section id="contact">
+    <p class="eyebrow" data-fr="05 — Contact" data-en="05 — Contact">05 — Contact</p>
+    <h2 data-fr="Parlons-en" data-en="Let's talk">Parlons-en</h2>
+    <p data-fr="Basée à Casablanca, mobile partout au Maroc. Le plus simple est de m'écrire sur LinkedIn."
+       data-en="Based in Casablanca, available across Morocco. LinkedIn is the easiest way to reach me."></p>
+
+    <div class="contact-links">
+      <!-- ⚠️ REMPLACE l'adresse ci-dessous par la tienne -->
+      <a class="btn primary" href="mailto:ton.email@exemple.com">ton.email@exemple.com</a>
+      <a class="btn" href="https://www.linkedin.com/in/rania-lasfar-681977265/" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/Cyliar" target="_blank" rel="noopener">GitHub</a>
+    </div>
+
+    <footer>© <span id="year"></span> Rania Lasfar — Casablanca</footer>
+  </section>
+
+</main>
+
+<script>
+/* ============================================================
+   Bascule FR / EN
+   Chaque élément traduisible porte data-fr et data-en.
+   ============================================================ */
+const boutons = document.querySelectorAll('.lang button');
+
+function appliquerLangue(langue){
+  document.querySelectorAll('[data-fr]').forEach(el => {
+    const texte = el.getAttribute('data-' + langue);
+    if (texte !== null) el.innerHTML = texte;
+  });
+  document.documentElement.lang = langue;
+  boutons.forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === langue));
+}
+
+boutons.forEach(b => b.addEventListener('click', () => appliquerLangue(b.dataset.lang)));
+
+// Langue par défaut
+appliquerLangue('fr');
+
+// Année dans le pied de page
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
