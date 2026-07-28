@@ -49,6 +49,7 @@ export interface SiteContent {
   certifications: Certification[]
   contact: {
     email: string
+    phone: string
     linkedin: string
     github: string
     text: LocalizedText
@@ -154,6 +155,10 @@ export const content: SiteContent = {
         en: 'MSc in Artificial Intelligence & Data Science',
       },
       org: 'HEM École d\'Ingénieurs — Bac+5',
+      description: {
+        fr: 'Lauréate, major de promotion.',
+        en: 'Graduated with honors, top of the class.',
+      },
     },
   ],
   projects: [
@@ -227,6 +232,8 @@ export const content: SiteContent = {
     {
       title: { fr: 'Machine learning & IA', en: 'Machine learning & AI' },
       items: [
+        { fr: 'Machine Learning', en: 'Machine Learning' },
+        { fr: 'Deep Learning', en: 'Deep Learning' },
         { fr: 'Python', en: 'Python' },
         { fr: 'scikit-learn', en: 'scikit-learn' },
         { fr: 'TensorFlow', en: 'TensorFlow' },
@@ -265,6 +272,17 @@ export const content: SiteContent = {
         { fr: 'Anglais — C1', en: 'English — C1' },
       ],
     },
+    {
+      title: { fr: 'Savoir-être', en: 'Soft skills' },
+      items: [
+        { fr: 'Communication', en: 'Communication' },
+        { fr: 'Travail en équipe', en: 'Teamwork' },
+        { fr: 'Créativité', en: 'Creativity' },
+        { fr: 'Adaptabilité', en: 'Adaptability' },
+        { fr: 'Résolution de problèmes', en: 'Problem solving' },
+        { fr: 'Gestion du temps', en: 'Time management' },
+      ],
+    },
   ],
   certifications: [
     {
@@ -290,6 +308,7 @@ export const content: SiteContent = {
   ],
   contact: {
     email: 'rania.lasfar.ai@gmail.com',
+    phone: '+212 6 61 77 17 35',
     linkedin: 'https://www.linkedin.com/in/rania-lasfar-681977265/',
     github: 'https://github.com/Cyliar',
     text: {

@@ -28,9 +28,17 @@ export default function Skills() {
           </h3>
           <div className="flex flex-wrap gap-1.5">
             {group.items.map((item, j) => (
-              <span key={j} className="rounded-lg border border-glass-border bg-glass px-3.5 py-1.5 text-sm">
+              <motion.span
+                key={j}
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ duration: 0.3, delay: i * 0.05 + j * 0.03 }}
+                whileHover={{ y: -2, borderColor: '#7C5CFF' }}
+                className="rounded-lg border border-glass-border bg-glass px-3.5 py-1.5 text-sm transition-colors"
+              >
                 {t(item)}
-              </span>
+              </motion.span>
             ))}
           </div>
         </motion.div>

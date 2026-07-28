@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { content } from '../data/content'
 import { useLang } from '../i18n/useLang'
+import ContactForm from './ContactForm'
 
 export default function Contact() {
   const { t } = useLang()
@@ -29,6 +30,12 @@ export default function Contact() {
           {content.contact.email}
         </a>
         <a
+          href={`tel:${content.contact.phone.replace(/\s/g, '')}`}
+          className="rounded-lg border border-glass-border px-5 py-2.5 font-mono text-[13px] transition-colors hover:border-signal hover:text-signal"
+        >
+          {content.contact.phone}
+        </a>
+        <a
           href={content.contact.linkedin}
           target="_blank"
           rel="noopener"
@@ -45,6 +52,8 @@ export default function Contact() {
           GitHub
         </a>
       </motion.div>
+
+      <ContactForm />
 
       <footer className="mt-10 border-t border-glass-border pt-8 font-mono text-[11.5px] text-paper-2">
         © {new Date().getFullYear()} {content.name} — Casablanca

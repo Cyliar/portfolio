@@ -22,7 +22,8 @@ export default function Certifications() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.4, delay: i * 0.04 }}
-            className={`flex flex-wrap items-baseline justify-between gap-4 bg-glass px-5 py-4 ${
+            whileHover={{ backgroundColor: 'rgba(124,92,255,0.08)' }}
+            className={`flex flex-wrap items-baseline justify-between gap-4 bg-glass px-5 py-4 transition-colors ${
               i > 0 ? 'border-t border-glass-border' : ''
             }`}
           >
