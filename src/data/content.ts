@@ -74,8 +74,8 @@ export const content: SiteContent = {
     {
       dotVariant: 'active',
       text: {
-        fr: 'En poste — <b>Crédit du Maroc</b>, depuis janvier 2025',
-        en: 'Currently at — <b>Crédit du Maroc</b>, since January 2025',
+        fr: 'En recherche d\'un nouveau poste',
+        en: 'Looking for a new role',
       },
     },
     {
@@ -87,18 +87,6 @@ export const content: SiteContent = {
     },
   ],
   timeline: [
-    {
-      date: { fr: 'Depuis janvier 2025', en: 'Since January 2025' },
-      title: {
-        fr: 'Ingénieure IA & Automatisation',
-        en: 'AI & Automation Engineer',
-      },
-      org: 'Crédit du Maroc — Casablanca',
-      description: {
-        fr: "Conception et mise en production de cas d'usage IA et RPA pour la banque. Modèle de prédiction des pannes de guichets automatiques, automatisation de processus métier, tableaux de bord de suivi.",
-        en: 'Designing and shipping AI and RPA use cases for the bank. Predictive model for ATM failures, business-process automation, monitoring dashboards.',
-      },
-    },
     {
       date: { fr: 'Septembre 2025 – Juin 2026', en: 'September 2025 – June 2026' },
       title: { fr: 'Ingénieure IA', en: 'AI Engineer' },
@@ -125,6 +113,18 @@ export const content: SiteContent = {
           en: 'Collaborating with business teams to implement high-value data solutions.',
         },
       ],
+    },
+    {
+      date: { fr: 'Janvier 2025 – Septembre 2025', en: 'January 2025 – September 2025' },
+      title: {
+        fr: 'Ingénieure IA & Automatisation',
+        en: 'AI & Automation Engineer',
+      },
+      org: 'Crédit du Maroc — Casablanca',
+      description: {
+        fr: "Conception et mise en production de cas d'usage IA et RPA pour la banque. Modèle de prédiction des pannes de guichets automatiques, automatisation de processus métier, tableaux de bord de suivi.",
+        en: 'Designing and shipping AI and RPA use cases for the bank. Predictive model for ATM failures, business-process automation, monitoring dashboards.',
+      },
     },
     {
       date: { fr: '2024', en: '2024' },
