@@ -4,41 +4,41 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Vue d'ensemble
 
-Portfolio personnel de Rania Lasfar : un site statique en un seul fichier `index.html` (HTML + CSS + JS inline, aucune dépendance, aucun build). `README.md` contient les instructions de déploiement en français destinées à l'utilisatrice.
+Portfolio personnel de Rania Lasfar, construit en React + Vite + TypeScript, stylé avec Tailwind CSS et animé avec Framer Motion. `README.md` contient les instructions de développement et de déploiement en français destinées à l'utilisatrice.
 
 ## Commandes
 
-Pas de build, lint ou tests — le site s'ouvre directement dans un navigateur.
+- **Installer les dépendances** : `npm install`
+- **Développement local** : `npm run dev` — sert le site sur http://localhost:5173 avec rechargement à chaud (Vite).
+- **Build de production** : `npm run build` — exécute `tsc -b` (vérification des types) puis `vite build`, génère le site statique dans `dist/`.
+- **Prévisualiser le build** : `npm run preview`.
 
-- **Prévisualiser** : double-cliquer sur `index.html`, ou servir le dossier (`python -m http.server`) si un rechargement via serveur local est nécessaire.
-- **Déployer** : push sur `main` du repo `Cyliar/portfolio` sur GitHub, avec GitHub Pages configuré sur `main` / `root`. Le site est servi sur `https://cyliar.github.io/portfolio/`.
+Pas de suite de tests ni de linter configurés dans ce dépôt.
 
 ## Architecture
 
-Tout vit dans `index.html`, organisé en 4 blocs commentés dans le `<style>` :
-
-1. **Jetons de design** (`:root`) — couleurs, polices, espacements. Modifier ces variables change l'identité visuelle du site entier (ex. `--signal` = couleur d'accent unique).
-2. **Rail de gauche** (`.rail`) — colonne fixe (nom, nav par ancres, sélecteur de langue, liens sociaux).
-3. **Colonne principale** (`main`) — sections empilées : `#intro`, `#parcours`, `#projets`, `#stack`, `#certifs`, `#contact`.
-4. **Apparition au chargement + responsive** — animations `.reveal`, media queries.
-
-En dessous de 880px, le layout passe d'une grille 2 colonnes à 1 colonne (rail en haut, nav horizontale).
-
-### Système de traduction FR/EN
-
-Pas de framework i18n : chaque élément traduisible porte `data-fr="..."` et `data-en="..."`. Le script en fin de fichier (`appliquerLangue`) lit l'attribut correspondant à la langue active et remplace `innerHTML`. Pour ajouter du contenu traduisible, toujours poser les deux attributs sur l'élément — sans `data-en`, le texte FR reste affiché même en mode EN.
+- **`src/main.tsx`** — point d'entrée, monte `<App />` dans `index.html`.
+- **`src/App.tsx`** — compose la page : `MotionConfig` (respect de `prefers-reduced-motion`) → `LangProvider` → `AnimatedBackground` (fond animé fixe) + grille deux colonnes (`Rail` en sidebar, `main` avec les sections empilées).
+- **`src/components/`** — un composant par section du site : `Rail` (sidebar : nom, nav par ancres, sélecteur de langue, liens sociaux), `Hero`, `Timeline` (parcours), `Projects` / `ProjectCard`, `Skills`, `Certifications`, `Contact`.
+- **`src/data/content.ts`** — **source unique de tout le contenu du site** (nom, rôle, thèse, parcours, projets, compétences, certifications, coordonnées de contact), en français et en anglais. Toujours modifier le contenu ici plutôt que dans les composants.
+- **`src/i18n/useLang.tsx`** — système de traduction FR/EN : `LangProvider` (état `lang` + `setLang`, synchronise `document.documentElement.lang` via un `useEffect`), le hook `useLang()` (expose `lang`, `setLang`, et `t()` pour traduire un objet `LocalizedText`), et le composant `<Html>` pour injecter du texte traduit contenant du HTML inline (ex. `<em>`, `<b>`).
+- **`src/styles/index.css`** — styles globaux Tailwind (`@tailwind base/components/utilities`) et règles CSS non couvertes par les classes utilitaires (dont `@media (prefers-reduced-motion: reduce)` pour les animations CSS pures).
+- **`tailwind.config.ts`** — palette de couleurs, typographies, et le breakpoint personnalisé **`rail:` (880px)** utilisé à la place de `md:` pour basculer entre le layout mobile (nav horizontale empilée en haut de page) et le layout desktop (sidebar verticale sticky + grille deux colonnes). Toujours utiliser `rail:` — pas `md:` ou `lg:` — pour ce point de rupture spécifique au layout sidebar/contenu.
 
 ### Ajouter un projet
 
-Copier un bloc `<article class="card">` existant dans `#projets`. Chaque carte a un mini-graphique SVG (`.spark`) dont les `points` de la `<polyline>` dessinent une forme représentative du projet (ex. courbe descendante pour une prédiction de panne).
+Ajouter une entrée dans le tableau `projects` de `src/data/content.ts` (voir les entrées existantes comme modèle), avec un `sparkPoints` (liste de points SVG) représentant la forme du mini-graphique affiché par `ProjectCard`.
 
-## À savoir
+### Ajouter une expérience
 
-- L'adresse e-mail de contact dans `#contact` est encore un placeholder (`ton.email@exemple.com`, deux occurrences) — à remplacer avant publication.
-- Email de contact de Rania : `rania.lasfar.ai@gmail.com`.
-- Dernière expérience non encore intégrée au site (`#parcours`) : **Ingénieure IA — TastyleTrans**.
-  - Développer des modèles de Machine Learning pour prédire les délais de livraison et optimiser les opérations logistiques.
-  - Analyser les données de transit afin d'identifier des axes d'amélioration et de soutenir la prise de décision.
-  - Concevoir des tableaux de bord et des KPI pour le suivi des performances logistiques.
-  - Automatiser le traitement et l'analyse des données pour améliorer l'efficacité opérationnelle.
-  - Collaborer avec les équipes métiers pour mettre en œuvre des solutions data à forte valeur ajoutée.
+Ajouter une entrée dans le tableau `timeline` de `src/data/content.ts` — utiliser `description` pour un paragraphe unique, ou `missions` pour une liste à puces.
+
+### Animations et accessibilité
+
+Les animations Framer Motion (`motion.*`, `whileInView`, `whileHover`) sont pilotées par `MotionConfig reducedMotion="user"` dans `App.tsx`, qui désactive automatiquement les animations de transform (x/y/rotate/scale) quand l'utilisateur a activé la réduction de mouvement au niveau OS/navigateur, tout en conservant les fondus en opacité. Le fond animé (`AnimatedBackground`) applique en plus une vérification explicite via `useReducedMotion()` pour ne pas planifier son animation en boucle infinie.
+
+## Déploiement
+
+Chaque push sur `main` déclenche le workflow GitHub Actions (`.github/workflows/deploy.yml`) qui build le projet (`npm ci` puis `npm run build`) et publie `dist/` sur GitHub Pages.
+
+**Pré-requis (une seule fois)** : dans GitHub → Settings → Pages, régler *Source* sur **GitHub Actions** (au lieu de "Deploy from a branch").

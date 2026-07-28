@@ -33,19 +33,19 @@ export default function Rail() {
         </div>
       </div>
 
-      <nav className="flex flex-col gap-0.5">
+      <nav className="flex flex-row flex-wrap gap-1 rail:flex-col rail:gap-0.5">
         {navItems.map((item) => (
           <a
             key={item.href}
             href={item.href}
-            className="border-l-2 border-glass-border py-1.5 pl-4 font-mono text-[12.5px] text-paper-2 transition-all hover:border-signal hover:pl-6 hover:text-signal"
+            className="border-b-2 border-glass-border py-1.5 pl-4 font-mono text-[12.5px] text-paper-2 transition-all hover:border-signal hover:pl-6 hover:text-signal rail:border-b-0 rail:border-l-2"
           >
             {lang === 'fr' ? item.fr : item.en}
           </a>
         ))}
       </nav>
 
-      <div className="mt-auto flex flex-col gap-3.5">
+      <div className="flex flex-row flex-wrap items-end justify-between gap-3.5 rail:mt-auto rail:flex-col rail:items-start">
         <div className="flex w-max overflow-hidden rounded-full border border-glass-border bg-glass">
           {(['fr', 'en'] as const).map((l) => (
             <button
@@ -63,7 +63,7 @@ export default function Rail() {
         </div>
         <div className="flex flex-col gap-1.5 font-mono text-xs">
           <a
-            href="https://www.linkedin.com/in/rania-lasfar-681977265/"
+            href={content.contact.linkedin}
             target="_blank"
             rel="noopener"
             className="text-paper-2 transition-colors hover:text-signal"
@@ -71,7 +71,7 @@ export default function Rail() {
             LinkedIn ↗
           </a>
           <a
-            href="https://github.com/Cyliar"
+            href={content.contact.github}
             target="_blank"
             rel="noopener"
             className="text-paper-2 transition-colors hover:text-signal"

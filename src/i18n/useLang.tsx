@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import type { Lang, LocalizedText } from '../data/content'
 
 interface LangContextValue {
@@ -12,6 +12,10 @@ const LangContext = createContext<LangContextValue | null>(null)
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>('fr')
   const t = (text: LocalizedText) => text[lang]
+
+  useEffect(() => {
+    document.documentElement.lang = lang
+  }, [lang])
 
   return (
     <LangContext.Provider value={{ lang, setLang, t }}>

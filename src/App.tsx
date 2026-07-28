@@ -1,3 +1,4 @@
+import { MotionConfig } from 'framer-motion'
 import AnimatedBackground from './components/AnimatedBackground'
 import Rail from './components/Rail'
 import Hero from './components/Hero'
@@ -10,19 +11,21 @@ import { LangProvider } from './i18n/useLang'
 
 export default function App() {
   return (
-    <LangProvider>
-      <AnimatedBackground />
-      <div className="grid min-h-screen rail:grid-cols-[300px_1fr]">
-        <Rail />
-        <main className="px-6 pb-24 pt-10 rail:px-[clamp(24px,5vw,72px)]">
-          <Hero />
-          <Timeline />
-          <Projects />
-          <Skills />
-          <Certifications />
-          <Contact />
-        </main>
-      </div>
-    </LangProvider>
+    <MotionConfig reducedMotion="user">
+      <LangProvider>
+        <AnimatedBackground />
+        <div className="grid min-h-screen rail:grid-cols-[300px_1fr]">
+          <Rail />
+          <main className="max-w-[900px] px-6 pb-24 pt-10 rail:px-[clamp(24px,5vw,72px)]">
+            <Hero />
+            <Timeline />
+            <Projects />
+            <Skills />
+            <Certifications />
+            <Contact />
+          </main>
+        </div>
+      </LangProvider>
+    </MotionConfig>
   )
 }
