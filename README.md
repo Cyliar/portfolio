@@ -1,53 +1,43 @@
 # Portfolio — Rania Lasfar
 
-Site personnel en un seul fichier : `index.html` (HTML + CSS + JS, aucune dépendance à installer).
+Site personnel construit avec React, Vite, Tailwind CSS et Framer Motion.
 
-## Mettre le fichier au bon endroit
-
-Dépose `index.html` et ce `README.md` dans :
-
-```
-C:\Users\Lenovo\OneDrive\Documents\code\portfolio
-```
-
-Puis double-clique sur `index.html` : le site s'ouvre dans ton navigateur.
-
-## À modifier avant de publier
-
-1. **Ton adresse e-mail** — cherche `ton.email@exemple.com` dans `index.html` (Ctrl+F) et remplace les deux occurrences.
-2. **Les couleurs** — tout est en haut du fichier, dans le bloc `:root`. Change `--signal` pour changer l'accent du site partout.
-3. **Les projets** — chaque projet est un bloc `<article class="card">`. Copie-colle un bloc existant pour en ajouter un.
-
-## Mettre en ligne avec GitHub Pages
-
-Depuis PowerShell, dans le dossier `portfolio` :
+## Développement local
 
 ```bash
-git init
-git add .
-git commit -m "Premier portfolio"
-git branch -M main
-git remote add origin https://github.com/Cyliar/portfolio.git
-git push -u origin main
+npm install
+npm run dev
 ```
 
-Crée d'abord le dépôt vide `portfolio` sur github.com/Cyliar.
+Le site est servi sur http://localhost:5173 avec rechargement à chaud.
 
-Ensuite sur GitHub : **Settings → Pages → Source : `main` / `root` → Save**.
-Le site sera en ligne sur `https://cyliar.github.io/portfolio/` après une ou deux minutes.
+## Build de production
 
-## Structure du fichier
+```bash
+npm run build
+```
 
-| Bloc | Ce qu'il contient |
+Génère le site statique dans `dist/`.
+
+## Déploiement
+
+Chaque push sur `main` déclenche le workflow GitHub Actions (`.github/workflows/deploy.yml`) qui build le projet et publie `dist/` sur GitHub Pages. Le site est en ligne sur https://cyliar.github.io/portfolio/.
+
+**Pré-requis (une seule fois)** : dans GitHub → Settings → Pages, régler *Source* sur **GitHub Actions** (au lieu de "Deploy from a branch").
+
+## Structure du projet
+
+| Dossier / fichier | Rôle |
 |---|---|
-| `:root` | Couleurs, polices, espacements — les « réglages » du site |
-| `.rail` | Colonne de gauche : nom, navigation, langue, liens |
-| `#intro` | Accroche et bandeau d'état |
-| `#parcours` | Ligne temporelle des expériences |
-| `#projets` | Cartes de projets avec mini-courbes |
-| `#stack` | Compétences par catégorie |
-| `#certifs` | Certifications |
-| `#contact` | Liens de contact |
-| `<script>` | Bascule FR / EN |
+| `src/data/content.ts` | Tout le contenu du site (parcours, projets, compétences, certifications), en français et en anglais |
+| `src/i18n/useLang.tsx` | Contexte et hook pour la bascule de langue FR/EN |
+| `src/components/` | Un composant par section du site |
+| `tailwind.config.ts` | Palette de couleurs et typographies |
 
-La traduction fonctionne par attributs : chaque élément traduisible porte `data-fr="..."` et `data-en="..."`. Pour traduire un nouvel élément, ajoute-lui ces deux attributs.
+### Ajouter un projet
+
+Ajouter une entrée dans le tableau `projects` de `src/data/content.ts` (voir les entrées existantes comme modèle), avec un `sparkPoints` (liste de points SVG) représentant la forme du mini-graphique.
+
+### Ajouter une expérience
+
+Ajouter une entrée dans le tableau `timeline` de `src/data/content.ts` — utiliser `description` pour un paragraphe unique, ou `missions` pour une liste à puces (comme pour TastyleTrans).
