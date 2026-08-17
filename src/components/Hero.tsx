@@ -146,8 +146,8 @@ export default function Hero() {
             >
               <img
                 src={content.photo}
-                width={640}
-                height={640}
+                width={576}
+                height={576}
                 alt={`${content.name} — ${t(content.role)}`}
                 className="block w-full rounded-full bg-surface"
               />

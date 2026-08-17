@@ -4,15 +4,15 @@
 
 Écrit `public/rania.webp` et `public/rania.png`.
 
-La source `scripts/photo-source.png` est un portrait posé sur un disque blanc
-uniforme, lui-même sur un fond gris sombre, le disque étant rogné de 28 px en
-haut.
+La source `scripts/photo-source.png` est le portrait du CV : buste en tailleur
+sur fond de studio gris clair uniforme, inscrit dans un cercle bordé d'un
+anneau bleu marine tracé par la mise en page du CV.
 
-Le traitement enchaîne trois étapes : retirer le fond de studio blanc, le
-remplacer par un fond nuit bleuté avec un contre-jour derrière la tête, puis
-éclairer le portrait en violet à gauche et en cyan à droite — les couleurs du
-site. Le visage garde ses teintes naturelles ; la photo cesse de ressembler à
-une photo d'identité posée sur une page sombre.
+Le traitement enchaîne quatre étapes : écarter l'anneau décoratif, détacher le
+sujet du fond de studio, le recomposer sur un fond nuit avec un contre-jour
+derrière la tête, puis l'éclairer en violet à gauche et en cyan à droite — les
+couleurs du site. Le visage garde ses teintes naturelles ; la photo cesse de
+ressembler à une vignette de CV posée sur une page sombre.
 
 Dépendances : `pip install pillow numpy scipy`
 """
@@ -26,20 +26,16 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, 'photo-source.png')
 OUT_DIR = os.path.join(HERE, '..', 'public')
 
-# Géométrie du disque blanc dans l'image source, relevée à la mesure.
-CX, CY, R = 323, 233, 261
-PAD_TOP = 40      # les 28 premières lignes du disque sont du blanc pur : on le prolonge
+# Géométrie du portrait dans l'image source, relevée à la mesure. R est le rayon
+# utile, pris juste à l'intérieur de l'anneau bleu marine pour l'exclure.
+CX, CY, R = 154, 154, 144
+
+# Niveau du fond de studio. Il sert de seuil de détourage et de couleur à
+# retirer des pixels de bord ; ce fond est gris clair, pas blanc pur.
+BACKDROP = 240.0
+
 SS = 4            # suréchantillonnage du masque circulaire
-OUTPUT = 640      # côté de l'image produite
-TIGHT = 0.86      # resserrement du cadre autour du sujet
-
-
-def load_padded():
-    """Complète le haut du disque sur du blanc pur et renvoie le centre corrigé."""
-    src = Image.open(SRC).convert('RGB')
-    canvas = Image.new('RGB', (src.width, src.height + PAD_TOP), (255, 255, 255))
-    canvas.paste(src, (0, PAD_TOP))
-    return canvas, CY + PAD_TOP
+OUTPUT = 576      # côté de l'image produite
 
 
 def circle_alpha(size: int) -> Image.Image:
@@ -61,49 +57,45 @@ def radial(size: int, cx: float, cy: float, radius: float) -> np.ndarray:
 def subject_alpha(rgb: np.ndarray, inside: np.ndarray) -> np.ndarray:
     """Opacité du sujet dans [0,1] : 0 sur le fond de studio, 1 sur le sujet.
 
-    Le fond est trouvé par composantes connexes depuis le bord du disque, et non
-    par simple seuillage : les hautes lumières du visage sont claires elles
-    aussi, un seuil les percerait.
+    Le fond se reconnaît à deux traits simultanés : il est clair *et* neutre. Ce
+    second critère est ce qui le sépare de la chemise, claire mais franchement
+    bleue, et de la peau, claire mais chaude. Un seuil sur la seule clarté
+    percerait l'une et l'autre.
+
+    La neutralité vaut aussi dans les zones de fond enclavées — le triangle
+    entre le bras replié et le buste — qu'une recherche par connexité depuis le
+    bord du disque laisserait au contraire intactes.
     """
     lum = rgb.mean(axis=2)
-    near_white = (lum > 236) & inside
+    neutral = rgb.max(axis=2) - rgb.min(axis=2) < 14
+    candidate = (lum > BACKDROP - 14) & neutral & inside
 
-    # Amorce : anneau juste à l'intérieur du disque, toujours du fond.
-    seed = ~ndimage.binary_erosion(inside, iterations=4) & inside
+    # Ne retenir que les plages étendues : un pixel neutre clair isolé, sur une
+    # dent ou un reflet d'œil, n'est pas du fond.
+    labels, count = ndimage.label(candidate)
+    if count:
+        sizes = np.bincount(labels.ravel())
+        keep = {i for i in range(1, count + 1) if sizes[i] >= 30}
+        background = np.isin(labels, list(keep))
+    else:
+        background = np.zeros_like(candidate)
 
-    labels, _ = ndimage.label(near_white)
-    background_labels = set(labels[seed & near_white].ravel()) - {0}
-    background = np.isin(labels, list(background_labels))
+    # Les pixels du contour mélangent le sujet et le fond. Sur un tailleur bleu
+    # marine, ce mélange donne un gris-bleu clair : le garder opaque trace un
+    # liseré net sur le fond nuit, et estimer sa composition demanderait de
+    # connaître la couleur du sujet en chaque point du bord.
+    #
+    # Plus simple et plus sûr : reculer la frontière à l'intérieur du sujet, de
+    # sorte que seuls des pixels franchement intérieurs subsistent. Le flou qui
+    # suit redonne un bord anticrénelé. On perd deux pixels de silhouette, ce
+    # qui ne se voit pas ; l'érosion élimine au passage les îlots de bruit que
+    # le filtrage par taille avait laissés dans le fond.
+    subject = ~background & inside
+    core = ndimage.binary_erosion(subject, iterations=6)
+    alpha = ndimage.gaussian_filter(core.astype(np.float32), 1.6)
 
-    # La transition cheveux/studio s'étale sur une dizaine de pixels : la bande
-    # traitée doit la couvrir entièrement, sinon un liseré clair subsiste.
-    # Dans cette bande, l'opacité suit la clarté du pixel — les cheveux, très
-    # sombres, restent pleinement opaques ; seuls les pixels clairs s'effacent.
-    band = ndimage.binary_dilation(background, iterations=10)
-    whiteness = np.clip((lum - 188.0) / 67.0, 0.0, 1.0)
-
-    alpha = np.ones_like(lum)
-    alpha[band] = 1.0 - whiteness[band]
-    alpha[background] = 0.0
     alpha[~inside] = 0.0
-
-    # Adoucit l'escalier laissé par le seuillage, sans ronger la silhouette.
-    return np.clip(ndimage.gaussian_filter(alpha, 0.8), 0.0, 1.0)
-
-
-def unmix_white(rgb: np.ndarray, alpha: np.ndarray) -> np.ndarray:
-    """Retire la contribution du fond blanc dans les pixels semi-transparents.
-
-    Un pixel de bord observé vaut O = F·a + 255·(1−a), où F est la vraie couleur
-    du sujet. Sans cette inversion, les mèches gardent le blanc du studio et
-    dessinent un halo clair dès qu'on les pose sur un fond sombre.
-    """
-    a = np.clip(alpha, 0.0, 1.0)[:, :, None]
-    unmixed = (rgb - 255.0 * (1.0 - a)) / np.maximum(a, 0.12)
-
-    # Les pixels quasi opaques n'ont rien à corriger : on les laisse intacts.
-    blend = np.clip((0.985 - a) / 0.985, 0.0, 1.0)
-    return np.clip(rgb * (1.0 - blend) + unmixed * blend, 0.0, 255.0)
+    return np.clip(alpha, 0.0, 1.0)
 
 
 def vignette(strength=0.34, radius=0.78):
@@ -137,17 +129,18 @@ def bicolor_light(rgb: np.ndarray) -> np.ndarray:
 
 
 def build_portrait() -> Image.Image:
-    canvas, cy = load_padded()
+    src = Image.open(SRC).convert('RGB')
 
-    r = int(R * TIGHT)
-    box = (CX - r, cy - r - int(R * 0.05), CX + r, cy + r - int(R * 0.05))
-    crop = canvas.crop(box).resize((OUTPUT, OUTPUT), Image.LANCZOS)
+    # Recadrage carré sur le disque utile, anneau décoratif exclu, puis mise à
+    # l'échelle. La source du CV est petite : l'agrandissement est assumé, la
+    # netteté est rattrapée au masque flou en fin de chaîne.
+    crop = src.crop((CX - R, CY - R, CX + R, CY + R))
+    crop = crop.resize((OUTPUT, OUTPUT), Image.LANCZOS)
 
     rgb = np.asarray(crop).astype(np.float32)
     inside = radial(OUTPUT, OUTPUT / 2 - 0.5, OUTPUT / 2 - 0.5, OUTPUT / 2 - 1) > 0
 
     alpha = subject_alpha(rgb, inside)
-    rgb = unmix_white(rgb, alpha)
 
     # Fond de studio : nuit bleutée, éclaircie derrière la tête pour détacher
     # les cheveux sombres — l'équivalent d'un contre-jour.
@@ -156,19 +149,18 @@ def build_portrait() -> Image.Image:
         np.array([26, 30, 58], dtype=np.float32) * (1 - ramp)
         + np.array([7, 9, 20], dtype=np.float32) * ramp
     )
-    rim = radial(OUTPUT, OUTPUT * 0.5, OUTPUT * 0.34, OUTPUT * 0.46)[:, :, None]
+    rim = radial(OUTPUT, OUTPUT * 0.5, OUTPUT * 0.30, OUTPUT * 0.44)[:, :, None]
     background = background + rim * np.array([92, 76, 168], dtype=np.float32)
 
     a = alpha[:, :, None]
     composed = rgb * a + background * (1 - a)
-
-    # Étalonnage : éclairage bicolore aux couleurs du site, puis vignettage.
     composed = bicolor_light(composed) * vignette()
 
     img = Image.fromarray(np.clip(composed, 0, 255).astype(np.uint8), 'RGB')
     img = ImageEnhance.Contrast(img).enhance(1.08)
     img = ImageEnhance.Color(img).enhance(1.05)
-    img = img.filter(ImageFilter.UnsharpMask(radius=1.6, percent=62, threshold=3))
+    # Rayon et dose relevés : la source est agrandie, il faut redonner du mordant.
+    img = img.filter(ImageFilter.UnsharpMask(radius=2.0, percent=78, threshold=2))
 
     out = img.convert('RGBA')
     out.putalpha(circle_alpha(OUTPUT))
@@ -179,7 +171,7 @@ def main():
     portrait = build_portrait()
     os.makedirs(OUT_DIR, exist_ok=True)
 
-    portrait.save(os.path.join(OUT_DIR, 'rania.webp'), 'WEBP', quality=90, method=6)
+    portrait.save(os.path.join(OUT_DIR, 'rania.webp'), 'WEBP', quality=92, method=6)
     portrait.save(os.path.join(OUT_DIR, 'rania.png'), 'PNG', optimize=True)
 
     for name in ('rania.webp', 'rania.png'):
