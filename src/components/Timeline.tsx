@@ -1,46 +1,86 @@
 import { motion } from 'framer-motion'
 import { content } from '../data/content'
 import { useLang } from '../i18n/useLang'
+import Section from './Section'
 
 export default function Timeline() {
   const { t } = useLang()
 
   return (
-    <section id="parcours" className="border-t border-glass-border py-16 md:py-20">
-      <p className="mb-5 font-mono text-[11.5px] uppercase tracking-[0.14em] text-signal">
-        01 — {t({ fr: 'Parcours', en: 'Experience' })}
-      </p>
-      <h2 className="mb-7 font-display text-[clamp(24px,3vw,32px)] font-bold tracking-[-0.02em]">
-        {t({ fr: "Là où j'ai travaillé", en: "Where I've worked" })}
-      </h2>
+    <Section
+      id="timeline"
+      index="03"
+      kicker={{ fr: 'Parcours', en: 'Experience' }}
+      title={{ fr: 'Là où j’ai appris le métier', en: 'Where I learned the craft' }}
+    >
+      <ol className="relative">
+        {/* Filet vertical reliant les étapes, estompé vers le bas. */}
+        <span
+          aria-hidden
+          className="absolute left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-violet via-cyan/40 to-transparent"
+        />
 
-      <div className="relative pl-7">
-        <div className="absolute bottom-1.5 left-[3px] top-1.5 w-px bg-glass-border" />
-        {content.timeline.map((step, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.5, delay: i * 0.05 }}
-            className="relative py-4"
+        {content.timeline.map((step, index) => (
+          <motion.li
+            key={`${step.org}-${step.date.fr}`}
+            initial={{ opacity: 0, x: -16 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-70px' }}
+            transition={{ duration: 0.5, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+            className="relative pb-10 pl-9 last:pb-0"
           >
-            <div className="absolute -left-7 top-6 h-1.5 w-1.5 rounded-full border-2 border-signal bg-ink" />
-            <div className="font-mono text-xs tracking-wide text-signal">{t(step.date)}</div>
-            <div className="mt-1 text-[17px] font-semibold">{t(step.title)}</div>
-            <div className="mt-0.5 font-mono text-[12.5px] text-paper-2">{step.org}</div>
-            {step.missions ? (
-              <ul className="mt-2 max-w-[62ch] list-disc space-y-1 pl-4 text-[15px] text-paper-2">
-                {step.missions.map((mission, j) => (
-                  <li key={j}>{t(mission)}</li>
+            <span className="absolute left-0 top-1.5 grid h-[15px] w-[15px] place-items-center">
+              {step.current && (
+                <span
+                  aria-hidden
+                  className="absolute inset-0 rounded-full bg-amber/60 animate-halo-pulse"
+                />
+              )}
+              <span
+                className={`h-[9px] w-[9px] rounded-full ring-4 ring-void ${
+                  step.current ? 'bg-amber' : 'bg-violet'
+                }`}
+              />
+            </span>
+
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-cyan/80">
+                {t(step.date)}
+              </span>
+              {step.current && (
+                <span className="rounded-full border border-amber/30 bg-amber/[0.08] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-amber">
+                  {t({ fr: 'en cours', en: 'current' })}
+                </span>
+              )}
+            </div>
+
+            <h3 className="mt-2 font-display text-lg font-semibold text-text nav:text-xl">
+              {t(step.title)}
+            </h3>
+            <p className="mt-0.5 text-sm text-muted-2">{step.org}</p>
+
+            {step.description && (
+              <p className="mt-3 max-w-2xl text-[14.5px] leading-relaxed text-muted">
+                {t(step.description)}
+              </p>
+            )}
+
+            {step.missions && (
+              <ul className="mt-3 max-w-2xl space-y-2">
+                {step.missions.map((mission) => (
+                  <li
+                    key={mission.fr}
+                    className="flex gap-2.5 text-[14.5px] leading-relaxed text-muted"
+                  >
+                    <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-violet" />
+                    {t(mission)}
+                  </li>
                 ))}
               </ul>
-            ) : step.description ? (
-              <p className="mt-2 max-w-[62ch] text-[15px] text-paper-2">{t(step.description)}</p>
-            ) : null}
-          </motion.div>
+            )}
+          </motion.li>
         ))}
-      </div>
-    </section>
+      </ol>
+    </Section>
   )
 }

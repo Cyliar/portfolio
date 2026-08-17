@@ -1,37 +1,100 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Compense le header collant quand on saute à une ancre. */
+    scroll-padding-top: 96px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-void font-body text-text antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(124, 92, 255, 0.35);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid #22d3ee;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Barre de défilement discrète, accordée au fond sombre. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(124, 92, 255, 0.5) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: linear-gradient(#7c5cff, #22d3ee);
+    border-radius: 99px;
+    border: 3px solid #05060b;
+  }
 }
 
-body {
-  @apply bg-ink font-body text-paper antialiased;
+@layer components {
+  /* Texte en dégradé, réutilisé sur les titres et les chiffres. */
+  .text-gradient {
+    background-image: linear-gradient(100deg, #eef1ff 0%, #a897ff 42%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Carte en verre : fond translucide, filet clair, ombre portée profonde. */
+  .glass {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015));
+    border: 1px solid theme('colors.line');
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+      0 24px 60px -30px rgba(0, 0, 0, 0.9);
+  }
+
+  /* Filet dégradé en bordure, obtenu par masquage de deux fonds. */
+  .ring-gradient {
+    background:
+      linear-gradient(theme('colors.surface'), theme('colors.surface')) padding-box,
+      linear-gradient(135deg, #7c5cff, #22d3ee 55%, #f472b6) border-box;
+    border: 1px solid transparent;
+  }
 }
 
-a {
-  color: inherit;
-}
-
-a:focus-visible,
-button:focus-visible {
-  outline: 2px solid #7c5cff;
-  outline-offset: 3px;
-  border-radius: 3px;
+/* Grain fin appliqué par-dessus le fond, pour casser les dégradés lisses. */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+
+  /* Neutralise les animations CSS pures, que MotionConfig ne couvre pas. */
+  .animate-drift-slow,
+  .animate-drift-slower,
+  .animate-marquee,
+  .animate-halo-pulse,
+  .animate-sheen,
+  .animate-scroll-hint {
+    animation: none !important;
   }
 }

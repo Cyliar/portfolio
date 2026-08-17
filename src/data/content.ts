@@ -5,15 +5,28 @@ export interface LocalizedText {
   en: string
 }
 
+export interface NavItem {
+  /** Identifiant de la section, utilisé comme ancre et comme clé React. */
+  id: string
+  label: LocalizedText
+}
+
 export interface StatusRow {
   dotVariant: 'active' | 'idle'
   text: LocalizedText
+}
+
+export interface Stat {
+  value: number
+  label: LocalizedText
 }
 
 export interface TimelineStep {
   date: LocalizedText
   title: LocalizedText
   org: string
+  /** Marque le poste en cours : puce animée et filet mis en avant. */
+  current?: boolean
   description?: LocalizedText
   missions?: LocalizedText[]
 }
@@ -23,6 +36,7 @@ export interface Project {
   title: LocalizedText
   description: LocalizedText
   tags: string[]
+  /** Points du mini-graphique SVG, dans une boîte de 108 × 36. */
   sparkPoints: string
 }
 
@@ -42,7 +56,14 @@ export interface SiteContent {
   eyebrow: string
   thesis: LocalizedText
   lede: LocalizedText
+  /** Chemins servis depuis `public/`, relatifs pour tenir sous un sous-dossier. */
+  photo: string
+  cv: string
+  nav: NavItem[]
   status: StatusRow[]
+  stats: Stat[]
+  about: LocalizedText[]
+  marquee: string[]
   timeline: TimelineStep[]
   projects: Project[]
   skills: SkillGroup[]
@@ -68,14 +89,24 @@ export const content: SiteContent = {
     en: 'Reading the signals <em>before</em> things break.',
   },
   lede: {
-    fr: "Ingénieure en intelligence artificielle et automatisation. Je construis des modèles qui anticipent — pannes de guichets, consommation d'eau, embouteillages — et des robots logiciels qui prennent en charge le travail répétitif.",
-    en: 'AI and automation engineer. I build models that anticipate — ATM failures, water demand, traffic jams — and software robots that take over repetitive work.',
+    fr: "Je construis des modèles qui anticipent — pannes de guichets, consommation d'eau, embouteillages — et des robots logiciels qui prennent en charge le travail répétitif.",
+    en: 'I build models that anticipate — ATM failures, water demand, traffic jams — and software robots that take over repetitive work.',
   },
+  photo: './rania.webp',
+  cv: './CV-Rania-Lasfar.pdf',
+  nav: [
+    { id: 'about', label: { fr: 'À propos', en: 'About' } },
+    { id: 'projects', label: { fr: 'Projets', en: 'Projects' } },
+    { id: 'timeline', label: { fr: 'Parcours', en: 'Experience' } },
+    { id: 'skills', label: { fr: 'Compétences', en: 'Skills' } },
+    { id: 'certifications', label: { fr: 'Certifications', en: 'Certifications' } },
+    { id: 'contact', label: { fr: 'Contact', en: 'Contact' } },
+  ],
   status: [
     {
       dotVariant: 'active',
       text: {
-        fr: 'En recherche d\'un nouveau poste',
+        fr: "En recherche d'un nouveau poste",
         en: 'Looking for a new role',
       },
     },
@@ -87,11 +118,63 @@ export const content: SiteContent = {
       },
     },
   ],
+  stats: [
+    {
+      value: 4,
+      label: { fr: 'expériences en entreprise', en: 'roles in industry' },
+    },
+    {
+      value: 5,
+      label: { fr: 'projets IA & data livrés', en: 'AI & data projects shipped' },
+    },
+    {
+      value: 5,
+      label: { fr: 'certifications professionnelles', en: 'professional certifications' },
+    },
+    {
+      value: 3,
+      label: { fr: 'langues de travail', en: 'working languages' },
+    },
+  ],
+  about: [
+    {
+      fr: "Ingénieure en intelligence artificielle et data science, diplômée major de promotion de HEM École d'Ingénieurs. Mon travail tient en une idée : la plupart des pannes, des ruptures et des engorgements laissent une trace dans les données bien avant de se produire. Reste à savoir la lire.",
+      en: "AI and data science engineer, top of my class at HEM École d'Ingénieurs. My work comes down to one idea: most breakdowns, shortages and bottlenecks leave a trace in the data long before they happen. The job is learning to read it.",
+    },
+    {
+      fr: "En banque, cela donne un modèle qui signale le guichet automatique sur le point de tomber, pour envoyer la maintenance avant l'arrêt de service. Dans les services publics, une prévision de la demande en eau qui appuie la planification. En logistique, des délais de livraison estimés à l'avance et des tableaux de bord qui rendent la performance lisible.",
+      en: 'In banking, that becomes a model flagging the ATM about to fail, so maintenance goes out before the machine stops. In utilities, a water-demand forecast that supports planning. In logistics, delivery times estimated ahead of the fact, and dashboards that make performance legible.',
+    },
+    {
+      fr: "L'autre moitié de mon métier, c'est l'automatisation : robots RPA et applications Power Platform qui reprennent les tâches répétitives, pour que les équipes passent leur temps sur les décisions plutôt que sur la saisie.",
+      en: 'The other half of my work is automation: RPA robots and Power Platform apps that absorb repetitive tasks, so teams spend their time on decisions instead of data entry.',
+    },
+  ],
+  marquee: [
+    'Python',
+    'Machine Learning',
+    'Deep Learning',
+    'TensorFlow',
+    'PyTorch',
+    'scikit-learn',
+    'NLP',
+    'LLM',
+    'SQL',
+    'Hadoop',
+    'Hive',
+    'Power BI',
+    'Automation Anywhere',
+    'Power Apps',
+    'Power Automate',
+    'C#',
+    '.NET MAUI',
+  ],
   timeline: [
     {
       date: { fr: 'Septembre 2025 – Juin 2026', en: 'September 2025 – June 2026' },
       title: { fr: 'Ingénieure IA', en: 'AI Engineer' },
       org: 'TastyleTrans',
+      current: true,
       missions: [
         {
           fr: 'Développer des modèles de Machine Learning pour prédire les délais de livraison et optimiser les opérations logistiques.',
@@ -154,7 +237,7 @@ export const content: SiteContent = {
         fr: 'Master en Intelligence Artificielle & Data Science',
         en: 'MSc in Artificial Intelligence & Data Science',
       },
-      org: 'HEM École d\'Ingénieurs — Bac+5',
+      org: "HEM École d'Ingénieurs — Bac+5",
       description: {
         fr: 'Lauréate, major de promotion.',
         en: 'Graduated with honors, top of the class.',
@@ -221,7 +304,7 @@ export const content: SiteContent = {
         en: 'RPA robots & Power Platform apps',
       },
       description: {
-        fr: "Automatisation de tâches manuelles répétitives et applications internes livrées aux équipes métier, du besoin au déploiement.",
+        fr: 'Automatisation de tâches manuelles répétitives et applications internes livrées aux équipes métier, du besoin au déploiement.',
         en: 'Automating repetitive manual tasks and shipping internal apps to business teams, from need to deployment.',
       },
       tags: ['Automation Anywhere', 'Power Apps', 'Power Automate', 'Power BI'],
@@ -312,8 +395,8 @@ export const content: SiteContent = {
     linkedin: 'https://www.linkedin.com/in/rania-lasfar-681977265/',
     github: 'https://github.com/Cyliar',
     text: {
-      fr: "Basée à Casablanca, mobile partout au Maroc. Le plus simple est de m'écrire sur LinkedIn.",
-      en: 'Based in Casablanca, available across Morocco. LinkedIn is the easiest way to reach me.',
+      fr: "Basée à Casablanca, mobile partout au Maroc. Écris-moi ici, ou directement sur LinkedIn — c'est le plus rapide.",
+      en: 'Based in Casablanca, available across Morocco. Write to me here, or on LinkedIn — that is the fastest route.',
     },
   },
 }

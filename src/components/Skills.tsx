@@ -1,48 +1,51 @@
 import { motion } from 'framer-motion'
 import { content } from '../data/content'
 import { useLang } from '../i18n/useLang'
+import Section from './Section'
 
+/**
+ * Grille bento : le premier groupe, le plus fourni, occupe deux colonnes ;
+ * les suivants remplissent le reste.
+ */
 export default function Skills() {
   const { t } = useLang()
 
   return (
-    <section id="stack" className="border-t border-glass-border py-16 md:py-20">
-      <p className="mb-5 font-mono text-[11.5px] uppercase tracking-[0.14em] text-signal">
-        03 — {t({ fr: 'Compétences', en: 'Skills' })}
-      </p>
-      <h2 className="mb-7 font-display text-[clamp(24px,3vw,32px)] font-bold tracking-[-0.02em]">
-        {t({ fr: 'Mes outils', en: 'My toolkit' })}
-      </h2>
+    <Section
+      id="skills"
+      index="04"
+      kicker={{ fr: 'Boîte à outils', en: 'Toolbox' }}
+      title={{ fr: 'Compétences', en: 'Skills' }}
+    >
+      {/* items-start : chaque carte prend sa hauteur propre, sans s'étirer sur
+          la plus haute de sa ligne — c'est ce qui donne l'aspect bento. */}
+      <div className="grid items-start gap-4 nav:grid-cols-3">
+        {content.skills.map((group, index) => (
+          <motion.div
+            key={group.title.fr}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-70px' }}
+            transition={{ duration: 0.5, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+            className={`glass rounded-2xl p-6 ${index === 0 ? 'nav:col-span-2' : ''}`}
+          >
+            <h3 className="font-mono text-[11px] uppercase tracking-[0.2em] text-cyan/80">
+              {t(group.title)}
+            </h3>
 
-      {content.skills.map((group, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.4, delay: i * 0.05 }}
-          className="mb-6"
-        >
-          <h3 className="mb-2.5 font-mono text-[11.5px] uppercase tracking-[0.12em] text-paper-2">
-            {t(group.title)}
-          </h3>
-          <div className="flex flex-wrap gap-1.5">
-            {group.items.map((item, j) => (
-              <motion.span
-                key={j}
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }}
-                transition={{ duration: 0.3, delay: i * 0.05 + j * 0.03 }}
-                whileHover={{ y: -2, borderColor: '#7C5CFF' }}
-                className="rounded-lg border border-glass-border bg-glass px-3.5 py-1.5 text-sm transition-colors"
-              >
-                {t(item)}
-              </motion.span>
-            ))}
-          </div>
-        </motion.div>
-      ))}
-    </section>
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {group.items.map((item) => (
+                <li
+                  key={item.fr}
+                  className="rounded-lg border border-line bg-white/[0.03] px-3 py-1.5 text-[13px] text-text transition-colors hover:border-violet/50 hover:bg-violet/[0.08]"
+                >
+                  {t(item)}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        ))}
+      </div>
+    </Section>
   )
 }

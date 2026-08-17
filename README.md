@@ -1,6 +1,10 @@
 # Portfolio — Rania Lasfar
 
 Site personnel construit avec React, Vite, Tailwind CSS et Framer Motion.
+Direction visuelle sombre et cinématique : fond aurore animé, scroll narratif,
+sections révélées à l'apparition, bilingue français / anglais.
+
+En ligne sur https://cyliar.github.io/portfolio/
 
 ## Développement local
 
@@ -21,23 +25,64 @@ Génère le site statique dans `dist/`.
 
 ## Déploiement
 
-Chaque push sur `main` déclenche le workflow GitHub Actions (`.github/workflows/deploy.yml`) qui build le projet et publie `dist/` sur GitHub Pages. Le site est en ligne sur https://cyliar.github.io/portfolio/.
+Chaque push sur `main` déclenche le workflow GitHub Actions
+(`.github/workflows/deploy.yml`) qui build le projet et publie `dist/` sur
+GitHub Pages.
 
-**Pré-requis (une seule fois)** : dans GitHub → Settings → Pages, régler *Source* sur **GitHub Actions** (au lieu de "Deploy from a branch").
+**Pré-requis (une seule fois)** : dans GitHub → Settings → Pages, régler
+*Source* sur **GitHub Actions** (au lieu de « Deploy from a branch »).
 
 ## Structure du projet
 
 | Dossier / fichier | Rôle |
 |---|---|
-| `src/data/content.ts` | Tout le contenu du site (parcours, projets, compétences, certifications), en français et en anglais |
+| `src/data/content.ts` | Tout le contenu du site (parcours, projets, compétences, certifications, chiffres clés), en français et en anglais |
 | `src/i18n/useLang.tsx` | Contexte et hook pour la bascule de langue FR/EN |
-| `src/components/` | Un composant par section du site |
-| `tailwind.config.ts` | Palette de couleurs et typographies |
+| `src/components/` | Un composant par section, plus `Header`, `Aurora` (fond animé) et `Section` (enveloppe commune) |
+| `tailwind.config.ts` | Palette, typographies, animations |
+| `scripts/process-photo.py` | Prépare le portrait du hero à partir de `scripts/photo-source.png` |
+| `public/` | Fichiers servis tels quels : portrait et CV |
 
-### Ajouter un projet
+## Modifier le contenu
 
-Ajouter une entrée dans le tableau `projects` de `src/data/content.ts` (voir les entrées existantes comme modèle), avec un `sparkPoints` (liste de points SVG) représentant la forme du mini-graphique.
+Tout se passe dans `src/data/content.ts`, jamais dans les composants.
 
-### Ajouter une expérience
+- **Ajouter un projet** : une entrée dans le tableau `projects`, avec un
+  `sparkPoints` (liste de points SVG dans une boîte de 108 × 36) qui dessine le
+  mini-graphique de la carte.
+- **Ajouter une expérience** : une entrée dans `timeline` — `description` pour
+  un paragraphe unique, `missions` pour une liste à puces. `current: true`
+  marque le poste en cours.
+- **Mettre à jour les chiffres clés** : le tableau `stats`.
 
-Ajouter une entrée dans le tableau `timeline` de `src/data/content.ts` — utiliser `description` pour un paragraphe unique, ou `missions` pour une liste à puces (comme pour TastyleTrans).
+## Remplacer le CV
+
+Déposer le nouveau PDF sous `public/CV-Rania-Lasfar.pdf` — c'est ce fichier que
+servent les boutons « Mon CV » et « Télécharger mon CV ».
+
+À la racine, `RANIA_LASFAR.pdf` et `2.PNG` sont les originaux envoyés depuis
+l'interface GitHub. Ils ne sont pas servis par le site — les versions utilisées
+sont `public/CV-Rania-Lasfar.pdf` et `scripts/photo-source.png` — et peuvent
+être supprimés.
+
+## Remplacer la photo
+
+Déposer le nouveau portrait sous `scripts/photo-source.png`, puis :
+
+```bash
+pip install pillow numpy scipy
+python scripts/process-photo.py
+```
+
+Le script détache le sujet du fond de studio blanc, le recompose sur un fond
+nuit avec un contre-jour, et écrit `public/rania.webp` et `public/rania.png`.
+Les constantes de géométrie en tête du script (`CX`, `CY`, `R`) décrivent le
+disque blanc de la photo d'origine : elles sont à réajuster si le cadrage de la
+nouvelle photo diffère.
+
+## Activer l'envoi du formulaire de contact
+
+Par défaut, le formulaire ouvre le client mail avec un message pré-rempli.
+Pour recevoir les messages directement par e-mail, créer un formulaire sur
+[Formspree](https://formspree.io) et reporter son identifiant dans la constante
+`FORMSPREE_ID` en tête de `src/components/ContactForm.tsx`.
