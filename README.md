@@ -60,10 +60,10 @@ Tout se passe dans `src/data/content.ts`, jamais dans les composants.
 Déposer le nouveau PDF sous `public/CV-Rania-Lasfar.pdf` — c'est ce fichier que
 servent les boutons « Mon CV » et « Télécharger mon CV ».
 
-À la racine, `RANIA_LASFAR.pdf` et `2.PNG` sont les originaux envoyés depuis
-l'interface GitHub. Ils ne sont pas servis par le site — les versions utilisées
-sont `public/CV-Rania-Lasfar.pdf` et `scripts/photo-source.png` — et peuvent
-être supprimés.
+La racine du dépôt ne contient que les fichiers de configuration. Les deux
+fichiers envoyés depuis l'interface GitHub y ont été rangés : le CV sous
+`public/CV-Rania-Lasfar.pdf`, la photo d'origine sous
+`scripts/photo-source.png`.
 
 ## Remplacer la photo
 
