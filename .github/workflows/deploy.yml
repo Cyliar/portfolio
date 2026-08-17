@@ -3,6 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Permet de relancer un déploiement depuis l'onglet Actions, sans commit.
+  workflow_dispatch:
 
 permissions:
   contents: read
